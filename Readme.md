@@ -66,7 +66,7 @@ npm run dev
 
 ### Main Tech-Stack
 
-- Promary: NestJS
+- Primary: NestJS
 - Extra
   - bcrpyt: Password hashing
   - jsonwebtoken: JWT generation
@@ -92,3 +92,25 @@ npm run start:dev
 ```
 
 - Find `http://localhost:3000` to run the backend application.
+
+## 3. Smart Contracts
+
+### Main Tech-Stack
+
+- Primary: Solidity
+
+### Setup instruction
+
+- Setup `Ganache`
+- Setup Truffle by using `npm i -g truffle`
+- Compile the contracts
+
+```
+truffle compile
+```
+
+- Implement Migration
+
+```
+truffle migrate --reset
+```
