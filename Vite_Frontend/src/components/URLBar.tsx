@@ -1,5 +1,5 @@
 import { FC, ChangeEvent } from "react";
-import { HTTPMethodEnum } from "../../common.type";
+import { HTTPMethodEnum } from "../common.type";
 
 interface URLBarProps {
   methods: HTTPMethodEnum;

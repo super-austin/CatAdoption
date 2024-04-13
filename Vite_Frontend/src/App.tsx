@@ -1,10 +1,11 @@
 import { FC, useState } from "react";
-import URLBar from "./components/URLBar/URLBar";
+import URLBar from "./components/URLBar";
 import { HTTPMethodEnum } from "./common.type";
 
 const App: FC = () => {
   const [url, setUrl] = useState("");
   const [methods, setMethods] = useState(HTTPMethodEnum.GET);
+  const [paramList, setParamList] = useState([]);
 
   const sendRequest = () => {
     alert("Submit Request");
