@@ -1,10 +1,21 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { PassportModule } from '@nestjs/passport';
+import { ConfigModule } from '@nestjs/config';
+
+import { AuthController } from './Auth/auth.controller';
+import { AuthService } from './Auth/auth.service';
+import { CatsController } from './Cats/cats.controller';
+import { CatsService } from './Cats/cats.service';
+import { JWTStrategy } from './auth-utils/auth.strategy';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    ConfigModule.forRoot({
+      envFilePath: ['.env.local', '.env'],
+    }),
+    PassportModule,
+  ],
+  controllers: [AuthController, CatsController],
+  providers: [AuthService, CatsService, JWTStrategy],
 })
 export class AppModule {}
