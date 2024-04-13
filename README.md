@@ -1,2 +1,0 @@
-# CatAdoption
-Blockchain Hometask
