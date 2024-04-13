@@ -13,7 +13,7 @@ export class CatsService {
     return this.cats;
   }
 
-  createAllCats(name, age, color, type) {
+  createCats(name, age, color, type) {
     const existingCat = this.cats.find((cat) => cat.name === name);
     if (existingCat) {
       return {
@@ -61,5 +61,18 @@ export class CatsService {
       isSuccess: true,
       data: updatedCat,
     };
+  }
+
+  deleteCatsById(id) {
+    const existingCatIndex = this.cats.findIndex((cat) => cat.id === id);
+    if (existingCatIndex < 0) {
+      return {
+        isSuccess: false,
+        msg: 'Cat not found!',
+      };
+    }
+
+    this.cats = this.cats.filter((cat) => cat.id !== id);
+    return { isSuccess: true };
   }
 }
