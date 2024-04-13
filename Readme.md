@@ -44,20 +44,47 @@ Used mono-repo for configuring this repository
 
 - Primary: Vite(React)
 - Styling: Tailwind CSS
-- Package Manager: Yarn
+- Package Manager: NPM
 
 ### Setup Instruction
 
 - Installing Dependencies
 
 ```
-yarn install
+npm install
 ```
 
 - Running Dev Server
 
 ```
-yarn dev
+npm run dev
 ```
 
-- Find `https://localhost:5173` to run the frontend application.
+- Find `http://localhost:5173` to run the frontend application.
+
+## 2. Backend
+
+### Main Tech-Stack
+
+- Promary: NestJS
+- Extra
+  - bcrpyt: Password hashing
+  - jsonwebtoken: JWT generation
+  - passport, passport-jwt: Authentication with JWT
+- Package Manager: NPM
+
+### Setup instruction
+
+- Installing Dependencies
+
+```
+npm install
+```
+
+- Running Dev Server
+
+```
+npm run start:dev
+```
+
+- Find `http://localhost:3000` to run the backend application.
