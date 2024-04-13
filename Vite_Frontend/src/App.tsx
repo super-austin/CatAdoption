@@ -17,9 +17,31 @@ const App: FC = () => {
   ]);
   const [params, setParams] = useState<HTTPRequestOptions[]>([]);
   const [body, setBody] = useState("");
+  const [result, setResult] = useState("");
 
-  const sendRequest = () => {
-    alert("Submit Request");
+  const sendRequest = async () => {
+    const requestURL =
+      url +
+      "?" +
+      new URLSearchParams(params.map((param) => [param.name, param.value]));
+
+    const response = await fetch(requestURL, {
+      method: methods,
+      headers: headers
+        .filter(({ isEnabled }) => isEnabled)
+        .reduce((result, { name, value }) => {
+          result[name] = value;
+          return result;
+        }, {} as Record<string, string>),
+      body,
+    });
+
+    if (response.status !== 200) {
+      setResult(`Error: ${response.status}-${response.statusText}`);
+    } else {
+      const responseText = await response.text();
+      setResult(responseText);
+    }
   };
 
   return (
@@ -43,11 +65,21 @@ const App: FC = () => {
         setOptions={setParams}
       />
       <section className="px-4 py-2 w-full">
+        <h3>Body</h3>
         <textarea
           className="border border-solid w-full p-2"
           value={body}
           onChange={(e) => setBody(e.target.value)}
           rows={10}
+        />
+      </section>
+      <section className="px-4 py-2 w-full">
+        <h3>Result</h3>
+        <textarea
+          className="border border-solid w-full p-2"
+          value={result}
+          rows={10}
+          readOnly
         />
       </section>
     </main>
