@@ -10,8 +10,11 @@
     @apply text-2xl font-semibold;
   }
 
-  th,
   td {
     @apply border border-solid px-2 py-1;
+  }
+
+  th {
+    @apply border border-solid px-2 py-1 bg-slate-800 text-white;
   }
 }
