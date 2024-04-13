@@ -4,9 +4,9 @@ import { ConfigModule } from '@nestjs/config';
 
 import { AuthController } from './Auth/auth.controller';
 import { AuthService } from './Auth/auth.service';
-import { LocalStrategy } from './auth-utils/auth.strategy';
 import { CatsController } from './Cats/cats.controller';
 import { CatsService } from './Cats/cats.service';
+import { JWTStrategy } from './auth-utils/auth.strategy';
 
 @Module({
   imports: [
@@ -16,6 +16,6 @@ import { CatsService } from './Cats/cats.service';
     PassportModule,
   ],
   controllers: [AuthController, CatsController],
-  providers: [AuthService, CatsService, LocalStrategy],
+  providers: [AuthService, CatsService, JWTStrategy],
 })
 export class AppModule {}

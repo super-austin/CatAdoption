@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { genSalt, hash, compare } from 'bcrypt';
 import { sign } from 'jsonwebtoken';
+import { JWTPayloadDto } from './auth.dto';
 
 @Injectable()
 export class AuthService {
@@ -56,11 +57,17 @@ export class AuthService {
     };
   }
 
-  async validateUser(username: string, password: string): Promise<any> {
+  async validateUser({
+    username,
+    app,
+    expiresIn,
+  }: JWTPayloadDto): Promise<any> {
     const user = this.userData.find((user) => user.username === username);
     if (!user) return false;
-    const passwordMatch = await compare(password, user.password);
-    if (!passwordMatch) return false;
+
+    if (app !== process.env.APP_NAME) return false;
+
+    if (Date.now() > expiresIn) return false;
 
     return true;
   }

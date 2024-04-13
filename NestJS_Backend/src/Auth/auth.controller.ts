@@ -1,12 +1,14 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
 
 import { AuthService } from './auth.service';
 import { AuthDto } from './auth.dto';
+import { JWTAuthGuard } from '../auth-utils/auth.guard';
 
 @Controller('/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @UseGuards(JWTAuthGuard)
   @Get('/health')
   testHealth(): string {
     return this.authService.testHealth();
