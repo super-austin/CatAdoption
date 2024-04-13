@@ -32,9 +32,25 @@ const HTTPRequestOptionSelector: FC<HTTPRequestOptionSelectorProps> = ({
     setOptions(options.filter((_, i) => i !== index));
   };
 
+  const handleAddField = () => {
+    setOptions([
+      ...options,
+      {
+        isEnabled: false,
+        name: "",
+        value: "",
+      },
+    ]);
+  };
+
   return (
     <section className="px-4 py-2 w-full flex flex-col gap-2">
-      <h3>{sectionTitle}</h3>
+      <div className="w-full flex items-center justify-between">
+        <h3>{sectionTitle}</h3>
+        <button className="px-2 py-1 border" onClick={handleAddField}>
+          Add
+        </button>
+      </div>
       <table className="border border-collapse">
         <thead>
           <tr>
