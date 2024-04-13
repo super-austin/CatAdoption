@@ -75,6 +75,10 @@ npm run dev
 
 ### Setup instruction
 
+- Copy `.env` and rename it as `.env.local`.
+
+- Fill in each variables with random strings.
+
 - Installing Dependencies
 
 ```
