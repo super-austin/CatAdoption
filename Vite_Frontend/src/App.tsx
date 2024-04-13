@@ -22,10 +22,13 @@ const App: FC = () => {
   const sendRequest = async () => {
     const requestURL =
       url +
-      "?" +
-      new URLSearchParams(params.map((param) => [param.name, param.value]));
+      (params.length > 0
+        ? `?${new URLSearchParams(
+            params.map((param) => [param.name, param.value])
+          )}`
+        : "");
 
-    const response = await fetch(requestURL, {
+    const response = await fetch("http://localhost:3000", {
       method: methods,
       headers: headers
         .filter(({ isEnabled }) => isEnabled)
@@ -33,14 +36,16 @@ const App: FC = () => {
           result[name] = value;
           return result;
         }, {} as Record<string, string>),
-      body,
+      body: methods === HTTPMethodEnum.GET ? undefined : body,
     });
 
     if (response.status !== 200) {
       setResult(`Error: ${response.status}-${response.statusText}`);
+      console.log(`Error: ${response.status}-${response.statusText}`);
     } else {
       const responseText = await response.text();
       setResult(responseText);
+      console.log(responseText);
     }
   };
 
