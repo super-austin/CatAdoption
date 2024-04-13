@@ -28,7 +28,7 @@ const App: FC = () => {
           )}`
         : "");
 
-    const response = await fetch("http://localhost:3000", {
+    const response = await fetch(requestURL, {
       method: methods,
       headers: headers
         .filter(({ isEnabled }) => isEnabled)
@@ -41,11 +41,9 @@ const App: FC = () => {
 
     if (response.status !== 200) {
       setResult(`Error: ${response.status}-${response.statusText}`);
-      console.log(`Error: ${response.status}-${response.statusText}`);
     } else {
       const responseText = await response.text();
       setResult(responseText);
-      console.log(responseText);
     }
   };
 
