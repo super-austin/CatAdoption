@@ -55,4 +55,13 @@ export class AuthService {
       jwt,
     };
   }
+
+  async validateUser(username: string, password: string): Promise<any> {
+    const user = this.userData.find((user) => user.username === username);
+    if (!user) return false;
+    const passwordMatch = await compare(password, user.password);
+    if (!passwordMatch) return false;
+
+    return true;
+  }
 }
