@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.22 <0.9.0;
+pragma experimental ABIEncoderV2;
 
 contract Cat {
     struct CatInfo {
@@ -11,6 +12,17 @@ contract Cat {
     }
 
     mapping(string => CatInfo) cats;
+    string[] catIds;
+
+    function getAllCats() public view returns (CatInfo[] memory) {
+        CatInfo[] memory allCats = new CatInfo[](catIds.length);
+
+        for (uint i = 0; i < catIds.length; i++) {
+            allCats[i] = cats[catIds[i]];
+        }
+
+        return allCats;
+    }
 
     function createCat(string memory _id, string memory _name, string memory _color, string memory _catType, uint8 _age) public {
         require(bytes(_id).length > 0, "ID must not be empty");
@@ -19,6 +31,7 @@ contract Cat {
             "Cat already exists"
         );
 
+        catIds.push(_id);
         cats[_id] = CatInfo(_id, _name, _color, _catType, _age);
     }
 
@@ -51,5 +64,18 @@ contract Cat {
         require(bytes(cat.id).length != 0, "Cat not found");
 
         delete cats[_id];
+        
+        for (uint i = 0; i < catIds.length; i++) {
+            if (
+                keccak256(abi.encodePacked(catIds[i])) ==
+                keccak256(abi.encodePacked(_id))
+            ) {
+                if (i != catIds.length - 1) {
+                    catIds[i] = catIds[catIds.length - 1];
+                }
+                catIds.pop();
+                break;
+            }
+        }
     }
 }

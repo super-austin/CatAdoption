@@ -21,8 +21,22 @@ export class CatsService {
     return 'Cats Service is working!';
   }
 
-  getAllCats() {
-    return this.cats;
+  async getAllCats() {
+    const catContract = new this.web3.eth.Contract(
+      this.catContractABI,
+      this.catContractAddress,
+    );
+    const allcats = await catContract.methods.getAllCats().call();
+    return {
+      isSuccess: true,
+      data: (allcats as Array<any[]>).map((cat) => ({
+        id: cat[0],
+        name: cat[1],
+        color: cat[2],
+        type: cat[3],
+        age: Number(cat[4]),
+      })),
+    };
   }
 
   async createCats(name, age, color, type) {
