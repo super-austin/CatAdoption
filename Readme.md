@@ -117,6 +117,16 @@ truffle compile
 truffle migrate --reset
 ```
 
+# Challenges
+
+- Writing to smart contracts for managing the data related to User and Cats.
+  By taking a look at and following the tutorial reference for writing down the contracts and integrating them using Web3.js, I could get the understandings of how smart contracts work.
+
+# Things can be improved
+
+- Smart contracts just returns the array as the data.
+  If I can define some data pipelines or clear type schemas, I can make my application more type-safe.
+
 # Screenshot
 
 ![screenshot](./screenshot.png)
