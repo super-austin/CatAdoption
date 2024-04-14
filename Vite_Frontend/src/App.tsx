@@ -3,7 +3,6 @@ import { FC, useState } from "react";
 import URLBar from "./components/URLBar";
 import { HTTPMethodEnum, HTTPRequestOptions } from "./common.type";
 import HTTPRequestOptionSelector from "./components/HTTPRequestOptionSelector";
-import "jsoneditor-react/es/editor.min.css";
 
 const App: FC = () => {
   const [url, setUrl] = useState("");
