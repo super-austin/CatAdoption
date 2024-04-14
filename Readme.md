@@ -77,7 +77,9 @@ npm run dev
 
 - Copy `.env` and rename it as `.env.local`.
 
-- Fill in each variables with random strings.
+- Fill in each variables with appropriate values.
+
+- Copy `Cat.json` and `User.json` file in `Solidity_SmatContract` to `NestJS_Backend/src/Contract`.
 
 - Installing Dependencies
 
