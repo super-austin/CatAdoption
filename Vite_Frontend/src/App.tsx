@@ -39,7 +39,7 @@ const App: FC = () => {
       body: methods === HTTPMethodEnum.GET ? undefined : body,
     });
 
-    if (response.status !== 200) {
+    if (response.status >= 400) {
       setResult(`Error: ${response.status}-${response.statusText}`);
     } else {
       const responseText = await response.text();
