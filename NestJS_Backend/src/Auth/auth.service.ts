@@ -4,6 +4,7 @@ import { genSalt, hash, compare } from 'bcrypt';
 import { sign } from 'jsonwebtoken';
 import { JWTPayloadDto } from './auth.dto';
 import * as UserContractInfo from '../Contract/User.json';
+import { environmentVariables, errorMsgs } from '../common.const';
 
 @Injectable()
 export class AuthService {
@@ -14,12 +15,12 @@ export class AuthService {
 
   constructor() {
     this.web3 = new Web3(
-      new Web3.providers.HttpProvider(process.env.PROVIDER_URL),
+      new Web3.providers.HttpProvider(environmentVariables.PROVIDER_URL),
     );
   }
 
   testHealth(): string {
-    return 'User Service is working!';
+    return errorMsgs.UserHealthCheck;
   }
 
   async registerUser(username, password) {
@@ -31,7 +32,7 @@ export class AuthService {
       await userContract.methods.findUserByUsername(username).call();
       return {
         success: false,
-        msg: 'User already exist',
+        msg: errorMsgs.UserAlreadyExists,
       };
     } catch (error) {
       // If user is not existing
@@ -39,10 +40,10 @@ export class AuthService {
       const hashedPassword = await hash(password, salt);
       await userContract.methods
         .registerUser(username, hashedPassword)
-        .send({ from: process.env.ACCOUNT_ADDRESS, gas: '1000000' });
+        .send({ from: environmentVariables.ACCOUNT_ADDRESS, gas: '1000000' });
       return {
         success: true,
-        msg: 'User Created!',
+        msg: errorMsgs.UserCreated,
       };
     }
   }
@@ -60,23 +61,23 @@ export class AuthService {
       if (!passwordMatch) {
         return {
           success: false,
-          msg: 'Invalid Password!',
+          msg: errorMsgs.InvalidPassword,
         };
       }
       const jwt = await sign(
         {
           username,
-          app: process.env.APP_NAME,
+          app: environmentVariables.APP_NAME,
           expiresIn: Date.now() + 1000 * 60 * 5, // 5 mins
         },
-        process.env.JWT_SECRET_KEY,
+        environmentVariables.JWT_SECRET_KEY,
       );
       return {
         success: true,
         jwt,
       };
     } catch (err) {
-      return { success: false, msg: 'User not found information' };
+      return { success: false, msg: errorMsgs.UserNotFound };
     }
   }
 
@@ -94,7 +95,7 @@ export class AuthService {
         .findUserByUsername(username)
         .call();
 
-      if (app !== process.env.APP_NAME) return false;
+      if (app !== environmentVariables.APP_NAME) return false;
 
       if (Date.now() > expiresIn) return false;
 

@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import Web3 from 'web3';
 
 import * as CatContractInfo from '../Contract/Cat.json';
+import { environmentVariables, errorMsgs } from '../common.const';
 
 @Injectable()
 export class CatsService {
@@ -13,12 +14,12 @@ export class CatsService {
 
   constructor() {
     this.web3 = new Web3(
-      new Web3.providers.HttpProvider(process.env.PROVIDER_URL),
+      new Web3.providers.HttpProvider(environmentVariables.PROVIDER_URL),
     );
   }
 
   testHealth(): string {
-    return 'Cats Service is working!';
+    return errorMsgs.CatHealthCheck;
   }
 
   async getAllCats() {
@@ -48,14 +49,17 @@ export class CatsService {
       const id = uuidv4();
       await catContract.methods
         .createCat(id, name, color, type, age)
-        .send({ from: process.env.ACCOUNT_ADDRESS, gas: '1000000' });
+        .send({ from: environmentVariables.ACCOUNT_ADDRESS, gas: '1000000' });
       return {
         isSuccess: true,
         data: { id, name, age, color, type },
       };
     } catch (error) {
       console.error(error);
-      return { isSuccess: false };
+      return {
+        isSuccess: false,
+        msg: errorMsgs.CreateCatError,
+      };
     }
   }
 
@@ -79,7 +83,7 @@ export class CatsService {
     } catch (error) {
       return {
         isSuccess: false,
-        msg: 'Cat not found!',
+        msg: errorMsgs.CatNotFound,
       };
     }
   }
@@ -117,7 +121,7 @@ export class CatsService {
     } catch (err) {
       return {
         isSuccess: false,
-        msg: 'Cat not found!',
+        msg: errorMsgs.CatNotFound,
       };
     }
   }
@@ -133,12 +137,12 @@ export class CatsService {
 
       await catContract.methods
         .deleteCat(id)
-        .send({ from: process.env.ACCOUNT_ADDRESS, gas: '1000000' });
+        .send({ from: environmentVariables.ACCOUNT_ADDRESS, gas: '1000000' });
       return { isSuccess: true };
     } catch (err) {
       return {
         isSuccess: false,
-        msg: 'Cat not found!',
+        msg: errorMsgs.CatNotFound,
       };
     }
   }
