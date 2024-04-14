@@ -25,25 +25,27 @@ export class CatsController {
 
   @UseGuards(JWTAuthGuard)
   @Get('/')
-  getAllCats(): Cats[] {
+  async getAllCats() {
     return this.catsService.getAllCats();
   }
 
   @UseGuards(JWTAuthGuard)
   @Post('/')
-  createCats(@Body(new ValidationPipe()) { name, age, color, type }: Cats) {
+  async createCats(
+    @Body(new ValidationPipe()) { name, age, color, type }: Cats,
+  ) {
     return this.catsService.createCats(name, age, color, type);
   }
 
   @UseGuards(JWTAuthGuard)
   @Get('/:id')
-  getCatsById(@Param('id') id: string) {
+  async getCatsById(@Param('id') id: string) {
     return this.catsService.getCatsById(id);
   }
 
   @UseGuards(JWTAuthGuard)
   @Put('/:id')
-  updateCatsById(
+  async updateCatsById(
     @Param('id') id: string,
     @Body(new ValidationPipe()) cat: Partial<Cats>,
   ) {
@@ -52,7 +54,7 @@ export class CatsController {
 
   @UseGuards(JWTAuthGuard)
   @Delete('/:id')
-  deleteCats(@Param('id') id: string) {
+  async deleteCats(@Param('id') id: string) {
     return this.catsService.deleteCatsById(id);
   }
 }

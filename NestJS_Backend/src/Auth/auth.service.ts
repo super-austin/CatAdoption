@@ -28,9 +28,7 @@ export class AuthService {
       this.userContractAddress,
     );
     try {
-      const user = await userContract.methods
-        .findUserByUsername(username)
-        .call();
+      await userContract.methods.findUserByUsername(username).call();
       return {
         success: false,
         msg: 'User already exist',

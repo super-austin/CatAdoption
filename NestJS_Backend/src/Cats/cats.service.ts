@@ -1,9 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
+import Web3 from 'web3';
+
+import * as CatContractInfo from '../Contract/Cat.json';
 
 @Injectable()
 export class CatsService {
   cats = [];
+  web3: Web3;
+  catContractAddress = CatContractInfo.networks['5777'].address;
+  catContractABI = CatContractInfo.abi;
+
+  constructor() {
+    this.web3 = new Web3(
+      new Web3.providers.HttpProvider(process.env.PROVIDER_URL),
+    );
+  }
 
   testHealth(): string {
     return 'Cats Service is working!';
@@ -13,66 +25,107 @@ export class CatsService {
     return this.cats;
   }
 
-  createCats(name, age, color, type) {
-    const existingCat = this.cats.find((cat) => cat.name === name);
-    if (existingCat) {
+  async createCats(name, age, color, type) {
+    const catContract = new this.web3.eth.Contract(
+      this.catContractABI,
+      this.catContractAddress,
+    );
+    try {
+      const id = uuidv4();
+      await catContract.methods
+        .createCat(id, name, color, type, age)
+        .send({ from: process.env.ACCOUNT_ADDRESS, gas: '1000000' });
       return {
-        isSuccess: false,
-        msg: 'Cat already exists!',
+        isSuccess: true,
+        data: { id, name, age, color, type },
       };
+    } catch (error) {
+      console.error(error);
+      return { isSuccess: false };
     }
-    const id = uuidv4();
-    this.cats.push({ id, name, age, color, type });
-    return {
-      isSuccess: true,
-      data: { id, name, age, color, type },
-    };
   }
 
-  getCatsById(id) {
-    const existingCat = this.cats.find((cat) => cat.id === id);
-    if (!existingCat) {
+  async getCatsById(id) {
+    const catContract = new this.web3.eth.Contract(
+      this.catContractABI,
+      this.catContractAddress,
+    );
+    try {
+      const existingCat = await catContract.methods.findCatById(id).call();
+      return {
+        isSuccess: true,
+        data: {
+          id: existingCat[0],
+          name: existingCat[1],
+          color: existingCat[2],
+          type: existingCat[3],
+          age: Number(existingCat[4]),
+        },
+      };
+    } catch (error) {
       return {
         isSuccess: false,
         msg: 'Cat not found!',
       };
     }
-    return {
-      isSuccess: true,
-      data: existingCat,
-    };
   }
 
-  updateCatsById(id, cat) {
-    const existingCatIndex = this.cats.findIndex((cat) => cat.id === id);
+  async updateCatsById(id, cat) {
+    const catContract = new this.web3.eth.Contract(
+      this.catContractABI,
+      this.catContractAddress,
+    );
+    try {
+      const existingCat = await catContract.methods.findCatById(id).call();
 
-    if (existingCatIndex < 0) {
+      const updatedCat = {
+        id: existingCat[0],
+        name: existingCat[1],
+        color: existingCat[2],
+        type: existingCat[3],
+        age: Number(existingCat[4]),
+
+        ...cat,
+      };
+
+      await catContract.methods.updateCat(
+        id,
+        updatedCat.name,
+        updatedCat.color,
+        updatedCat.type,
+        Number(updatedCat.age),
+      );
+
+      return {
+        isSuccess: true,
+        data: updatedCat,
+      };
+    } catch (err) {
       return {
         isSuccess: false,
         msg: 'Cat not found!',
       };
     }
-
-    const existingCat = this.cats[existingCatIndex];
-    const updatedCat = { ...existingCat, ...cat };
-    this.cats[existingCatIndex] = updatedCat;
-
-    return {
-      isSuccess: true,
-      data: updatedCat,
-    };
   }
 
-  deleteCatsById(id) {
-    const existingCatIndex = this.cats.findIndex((cat) => cat.id === id);
-    if (existingCatIndex < 0) {
+  async deleteCatsById(id) {
+    const catContract = new this.web3.eth.Contract(
+      this.catContractABI,
+      this.catContractAddress,
+    );
+
+    try {
+      await catContract.methods.findCatById(id).call();
+
+      await catContract.methods
+        .deleteCat(id)
+        .send({ from: process.env.ACCOUNT_ADDRESS, gas: '1000000' });
+      return { isSuccess: true };
+    } catch (err) {
       return {
         isSuccess: false,
         msg: 'Cat not found!',
       };
     }
-
-    this.cats = this.cats.filter((cat) => cat.id !== id);
-    return { isSuccess: true };
   }
 }
